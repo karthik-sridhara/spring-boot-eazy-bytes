@@ -1,0 +1,25 @@
+package com.eazybytes.jobportal.repository;
+
+import com.eazybytes.jobportal.entity.Company;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository // Optional
+public interface CompanyRepository extends JpaRepository<Company, Long> {
+
+    @Query("SELECT DISTINCT c FROM Company c JOIN FETCH c.jobs j WHERE j.status = :status")
+    List<Company> findAllByJobStatus(@Param("status") String status);
+
+    List<Company> findAllCompaniesByJobStatus(@Param("status") String status);
+
+    @Query(value = "SELECT DISTINCT c.* FROM companies c JOIN jobs j ON c.id = j.company_id WHERE j.status = ?1",nativeQuery = true)
+    List<Company> findAllByJobStatusNative(String status);
+
+    List<Company> findAllCompaniesByJobStatusNative(@Param("status") String status);
+
+
+}
