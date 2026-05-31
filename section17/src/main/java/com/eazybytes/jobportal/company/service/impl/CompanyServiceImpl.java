@@ -5,8 +5,12 @@ import com.eazybytes.jobportal.dto.CompanyDto;
 import com.eazybytes.jobportal.dto.JobDto;
 import com.eazybytes.jobportal.entity.Company;
 import com.eazybytes.jobportal.entity.Job;
+import com.eazybytes.jobportal.exception.BusinessException;
 import com.eazybytes.jobportal.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +57,33 @@ public class CompanyServiceImpl implements ICompanyService {
         return companyList.stream()
                 .map(this::transformCompanyToDtoWithoutJobs)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void updateCompany(CompanyDto companyDto, Long id) {
+        int updatedRows = companyRepository.updateCompanyDetails(
+                id,
+                companyDto.name(),
+                companyDto.logo(),
+                companyDto.industry(),
+                companyDto.size(),
+                companyDto.rating(),
+                companyDto.locations(),
+                companyDto.founded(),
+                companyDto.description(),
+                companyDto.employees(),
+                companyDto.website()
+        );
+        if (updatedRows != 1) {
+            throw new BusinessException("COMPANY_NOT_FOUND", "No company found with ID: " + id, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteCompany(Long id) {
+        companyRepository.deleteById(id);
     }
 
     private CompanyDto transformCompanyToDtoWithoutJobs(Company company) {

@@ -3,6 +3,7 @@ package com.eazybytes.jobportal.company.controller;
 import com.eazybytes.jobportal.dto.CompanyDto;
 import com.eazybytes.jobportal.company.service.ICompanyService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,4 +33,24 @@ public class CompanyController {
         return ResponseEntity.ok().body(companyService.getAllCompaniesWithoutJobs());
     }
 
+    @PutMapping(path = "/{id}/admin",  version = "1.0")
+    public ResponseEntity<String> updateCompany(
+            @PathVariable
+            @NotBlank(message = "Company ID must not be blank")
+            String id,
+            @RequestBody @Valid CompanyDto companyDto
+    ) {
+        companyService.updateCompany(companyDto,Long.valueOf(id));
+        return ResponseEntity.ok().body("Updated company with id: " + id);
+    }
+
+    @DeleteMapping(path = "/{id}/admin", version = "1.0")
+    public ResponseEntity<String> deleteCompany(
+        @PathVariable
+        @NotBlank(message = "Company ID must not be blank")
+        String id
+    ) {
+        companyService.deleteCompany(Long.valueOf(id));
+        return ResponseEntity.ok().body("Deleted company with id: " + id);
+    }
 }

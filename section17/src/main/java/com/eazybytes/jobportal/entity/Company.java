@@ -13,10 +13,31 @@ import java.util.List;
 @Table(name = "COMPANIES")
 @Getter
 @Setter
-@NamedQuery(
+@NamedQueries({
+    @NamedQuery(
         name = "Company.findAllCompaniesByJobStatus",
         query = "SELECT DISTINCT c FROM Company c JOIN FETCH c.jobs j WHERE j.status = :status"
-)
+    ),
+    @NamedQuery(
+        name = "Company.updateCompanyDetails",
+        query = """
+            UPDATE Company c
+            SET
+                c.name = :name,
+                c.logo = :logo,
+                c.industry = :industry,
+                c.size = :size,
+                c.rating = :rating,
+                c.locations = :locations,
+                c.founded = :founded,
+                c.description = :description,
+                c.employees = :employee,
+                c.website = :website
+            WHERE c.id = :id
+        """
+    )
+})
+
 @NamedNativeQuery(
         name = "Company.findAllCompaniesByJobStatusNative",
         query = "SELECT DISTINCT c.* FROM companies c JOIN jobs j ON j.company_id = c.id WHERE j.status = :status",

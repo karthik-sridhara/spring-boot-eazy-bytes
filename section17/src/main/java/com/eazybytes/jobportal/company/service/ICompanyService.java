@@ -12,4 +12,8 @@ public interface ICompanyService {
     CompanyDto createCompany(CompanyDto companyDto);
 
     List<CompanyDto> getAllCompaniesWithoutJobs();
+
+    void updateCompany(CompanyDto companyDto, Long id);
+
+    void deleteCompany(Long id);
 }
